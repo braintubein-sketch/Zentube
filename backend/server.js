@@ -21,10 +21,6 @@ import searchRoutes from './routes/search.routes.js';
 
 const app = express();
 
-// Debug: show what URI is being used (masked)
-const uri = process.env.MONGODB_URI || 'NOT SET';
-console.log(`🔍 MONGODB_URI: ${uri.substring(0, 30)}...${uri.substring(uri.indexOf('@'))}`);
-
 // Connect to MongoDB
 connectDB();
 
