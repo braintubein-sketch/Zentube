@@ -64,7 +64,7 @@ app.use('/api/search', searchRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Zentro API is running', timestamp: new Date().toISOString() });
+  res.json({ status: 'OK', message: 'Zentube API is running', timestamp: new Date().toISOString() });
 });
 
 // 404 handler
@@ -77,7 +77,7 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`⚡ Zentro API running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  console.log(`⚡ Zentube API running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 });
 
 export default app;

@@ -14,7 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(localStorage.getItem('zentro_token'));
+    const [token, setToken] = useState(localStorage.getItem('zentube_token'));
 
     useEffect(() => {
         if (token) {
@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         const { data } = await authAPI.login(credentials);
-        localStorage.setItem('zentro_token', data.token);
-        localStorage.setItem('zentro_user', JSON.stringify(data.user));
+        localStorage.setItem('zentube_token', data.token);
+        localStorage.setItem('zentube_user', JSON.stringify(data.user));
         setToken(data.token);
         setUser(data.user);
         return data;
@@ -47,23 +47,23 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         const { data } = await authAPI.register(userData);
-        localStorage.setItem('zentro_token', data.token);
-        localStorage.setItem('zentro_user', JSON.stringify(data.user));
+        localStorage.setItem('zentube_token', data.token);
+        localStorage.setItem('zentube_user', JSON.stringify(data.user));
         setToken(data.token);
         setUser(data.user);
         return data;
     };
 
     const logout = () => {
-        localStorage.removeItem('zentro_token');
-        localStorage.removeItem('zentro_user');
+        localStorage.removeItem('zentube_token');
+        localStorage.removeItem('zentube_user');
         setToken(null);
         setUser(null);
     };
 
     const updateUser = (updatedUser) => {
         setUser(prev => ({ ...prev, ...updatedUser }));
-        localStorage.setItem('zentro_user', JSON.stringify({ ...user, ...updatedUser }));
+        localStorage.setItem('zentube_user', JSON.stringify({ ...user, ...updatedUser }));
     };
 
     const value = {

@@ -221,7 +221,7 @@ const Settings = () => {
                                 <ToggleSwitch checked={true} label="Comment replies"
                                     desc="Notify when someone replies to your comment" onChange={() => { }} />
                                 <ToggleSwitch checked={false} label="Promotional emails"
-                                    desc="Updates about Zentro features and offers" onChange={() => { }} />
+                                    desc="Updates about Zentube features and offers" onChange={() => { }} />
                             </div>
                         </div>
                     )}
@@ -243,8 +243,8 @@ const Settings = () => {
                                                 key={theme.id}
                                                 onClick={() => setPreferences({ ...preferences, theme: theme.id })}
                                                 className={`p-4 rounded-xl border transition-all text-center ${preferences.theme === theme.id
-                                                        ? 'border-brand bg-brand/10 shadow-glow'
-                                                        : 'border-z-border hover:border-z-border-light hover:bg-z-surface'
+                                                    ? 'border-brand bg-brand/10 shadow-glow'
+                                                    : 'border-z-border hover:border-z-border-light hover:bg-z-surface'
                                                     }`}
                                             >
                                                 <theme.icon className="w-6 h-6 mx-auto mb-2" />

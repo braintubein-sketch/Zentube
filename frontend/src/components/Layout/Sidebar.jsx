@@ -209,7 +209,7 @@ const Sidebar = ({ isOpen, isMini }) => {
                         <div className="flex flex-wrap gap-x-2 gap-y-1">
                             <span>Terms</span><span>Privacy</span><span>Policy & Safety</span>
                         </div>
-                        <p className="pt-2 text-z-text-muted/60">© 2026 Zentro</p>
+                        <p className="pt-2 text-z-text-muted/60">© 2026 Zentube</p>
                     </div>
                 </div>
             </aside>

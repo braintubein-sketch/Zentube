@@ -33,7 +33,7 @@ export const uploadVideo = async (req, res, next) => {
         // Upload video to Cloudinary
         const videoFile = req.files.video[0];
         const videoResult = await uploadToCloudinary(videoFile.buffer, {
-            folder: 'zentro/videos',
+            folder: 'zentube/videos',
             resource_type: 'video',
             chunk_size: 6000000,
         });
@@ -43,7 +43,7 @@ export const uploadVideo = async (req, res, next) => {
         let thumbnailPublicId = '';
         if (req.files.thumbnail) {
             const thumbResult = await uploadToCloudinary(req.files.thumbnail[0].buffer, {
-                folder: 'zentro/thumbnails',
+                folder: 'zentube/thumbnails',
                 transformation: [{ width: 1280, height: 720, crop: 'fill' }],
             });
             thumbnailUrl = thumbResult.secure_url;
@@ -186,7 +186,7 @@ export const updateVideo = async (req, res, next) => {
                 await cloudinary.uploader.destroy(video.thumbnailPublicId);
             }
             const thumbResult = await uploadToCloudinary(req.files.thumbnail[0].buffer, {
-                folder: 'zentro/thumbnails',
+                folder: 'zentube/thumbnails',
                 transformation: [{ width: 1280, height: 720, crop: 'fill' }],
             });
             video.thumbnail = thumbResult.secure_url;

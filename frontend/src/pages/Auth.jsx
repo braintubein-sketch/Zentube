@@ -66,7 +66,7 @@ const Auth = () => {
                         {isLogin ? 'Welcome back' : 'Create your account'}
                     </h1>
                     <p className="text-sm text-z-text-muted text-center mb-8">
-                        {isLogin ? 'Sign in to continue to Zentro' : 'Join Zentro to start sharing'}
+                        {isLogin ? 'Sign in to continue to Zentube' : 'Join Zentube to start sharing'}
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -190,7 +190,7 @@ const Auth = () => {
 
                 {/* Terms */}
                 <p className="text-center text-xs text-z-text-muted/60 mt-4">
-                    By continuing, you agree to Zentro's <span className="text-z-text-muted hover:text-z-text cursor-pointer">Terms of Service</span> and <span className="text-z-text-muted hover:text-z-text cursor-pointer">Privacy Policy</span>
+                    By continuing, you agree to Zentube's <span className="text-z-text-muted hover:text-z-text cursor-pointer">Terms of Service</span> and <span className="text-z-text-muted hover:text-z-text cursor-pointer">Privacy Policy</span>
                 </p>
             </div>
         </div>

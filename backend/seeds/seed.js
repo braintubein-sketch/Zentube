@@ -18,13 +18,13 @@ const seedAdmin = async () => {
 
         // Create admin user
         const admin = await User.create({
-            name: 'Zentro Admin',
+            name: 'Zentube Admin',
             email: process.env.ADMIN_EMAIL || 'admin@zentro.com',
             password: process.env.ADMIN_PASSWORD || 'Admin@123456',
             role: 'admin',
-            channelName: 'Zentro Official',
-            avatar: 'https://ui-avatars.com/api/?name=Zentro+Admin&background=7c3aed&color=fff&size=200',
-            bio: 'Official Zentro platform admin account.',
+            channelName: 'Zentube Official',
+            avatar: 'https://ui-avatars.com/api/?name=Zentube+Admin&background=7c3aed&color=fff&size=200',
+            bio: 'Official Zentube platform admin account.',
         });
 
         console.log('✅ Admin user created successfully!');

@@ -133,7 +133,7 @@ export const updateProfile = async (req, res, next) => {
             const avatarFile = req.files.avatar[0];
             const result = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
-                    { folder: 'zentro/avatars', transformation: [{ width: 200, height: 200, crop: 'fill' }] },
+                    { folder: 'zentube/avatars', transformation: [{ width: 200, height: 200, crop: 'fill' }] },
                     (error, result) => {
                         if (error) reject(error);
                         else resolve(result);
@@ -149,7 +149,7 @@ export const updateProfile = async (req, res, next) => {
             const bannerFile = req.files.banner[0];
             const result = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
-                    { folder: 'zentro/banners', transformation: [{ width: 1280, height: 320, crop: 'fill' }] },
+                    { folder: 'zentube/banners', transformation: [{ width: 1280, height: 320, crop: 'fill' }] },
                     (error, result) => {
                         if (error) reject(error);
                         else resolve(result);

@@ -70,7 +70,7 @@ const Navbar = ({ onToggleSidebar }) => {
                         </div>
                         <span className="text-lg font-bold tracking-tight hidden sm:block">
                             <span className="text-z-text">Zen</span>
-                            <span className="gradient-text">tro</span>
+                            <span className="gradient-text">tube</span>
                         </span>
                     </Link>
                 </div>
@@ -250,7 +250,7 @@ const Navbar = ({ onToggleSidebar }) => {
                                             <HiOutlineUser className="w-5 h-5" /> Your channel
                                         </Link>
                                         <Link to="/dashboard" className="dropdown-item">
-                                            <HiOutlineChartBar className="w-5 h-5" /> Zentro Studio
+                                            <HiOutlineChartBar className="w-5 h-5" /> Zentube Studio
                                         </Link>
                                         <div className="dropdown-divider" />
                                         <Link to="/settings" className="dropdown-item">

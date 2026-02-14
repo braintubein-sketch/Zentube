@@ -12,7 +12,7 @@ const api = axios.create({
 // Request interceptor - attach token
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('zentro_token');
+        const token = localStorage.getItem('zentube_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -26,8 +26,8 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            localStorage.removeItem('zentro_token');
-            localStorage.removeItem('zentro_user');
+            localStorage.removeItem('zentube_token');
+            localStorage.removeItem('zentube_user');
             // Don't redirect if already on auth page
             if (!window.location.pathname.includes('/auth')) {
                 window.location.href = '/auth';
