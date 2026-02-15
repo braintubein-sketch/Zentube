@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { HiOutlineDotsVertical, HiOutlineClock, HiOutlineBookmark, HiOutlineFlag, HiOutlineShare } from 'react-icons/hi';
+import { HiOutlineDotsVertical, HiOutlineClock, HiOutlineBookmark, HiOutlineFlag, HiOutlineShare, HiCheck } from 'react-icons/hi';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { userAPI } from '../api';
@@ -52,7 +52,9 @@ export const formatDuration = (seconds) => {
 const VideoCard = ({ video, horizontal = false }) => {
     const [showMenu, setShowMenu] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [savedWL, setSavedWL] = useState(false);
     const menuRef = useRef(null);
+    const hoverTimer = useRef(null);
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -60,8 +62,20 @@ const VideoCard = ({ video, horizontal = false }) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
         };
         document.addEventListener('mousedown', handleClick);
-        return () => document.removeEventListener('mousedown', handleClick);
+        return () => {
+            document.removeEventListener('mousedown', handleClick);
+            if (hoverTimer.current) clearTimeout(hoverTimer.current);
+        };
     }, []);
+
+    const handleMouseEnter = () => {
+        hoverTimer.current = setTimeout(() => setIsHovered(true), 100);
+    };
+    const handleMouseLeave = () => {
+        if (hoverTimer.current) clearTimeout(hoverTimer.current);
+        setIsHovered(false);
+        setShowMenu(false);
+    };
 
     const handleWatchLater = async (e) => {
         e.preventDefault();
@@ -69,6 +83,7 @@ const VideoCard = ({ video, horizontal = false }) => {
         if (!isAuthenticated) return toast.error('Please sign in');
         try {
             await userAPI.toggleWatchLater(video._id);
+            setSavedWL(true);
             toast.success('Saved to Watch later');
         } catch { }
         setShowMenu(false);
@@ -76,107 +91,137 @@ const VideoCard = ({ video, horizontal = false }) => {
 
     const owner = video.owner || {};
 
-    // Horizontal card (for search, history, etc.)
+    // Horizontal card (search results, watch page recommendations)
     if (horizontal) {
         return (
-            <div className="flex gap-4 p-2 rounded-xl hover:bg-z-surface transition-colors group">
-                <Link to={`/watch/${video._id}`} className="relative shrink-0 w-40 sm:w-64 aspect-video rounded-xl overflow-hidden bg-z-surface">
+            <div className="flex gap-2 group cursor-pointer rounded-xl transition-colors"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => { setIsHovered(false); setShowMenu(false); }}>
+                <Link to={`/watch/${video._id}`} className="relative shrink-0 w-40 sm:w-44 aspect-video rounded-lg overflow-hidden" style={{ backgroundColor: '#272727' }}>
                     <img
-                        src={video.thumbnail || `https://placehold.co/640x360/1a1a1a/9147ff?text=${encodeURIComponent(video.title?.slice(0, 1) || 'Z')}`}
+                        src={video.thumbnail || `https://placehold.co/640x360/272727/717171?text=${encodeURIComponent(video.title?.slice(0, 1) || 'Z')}`}
                         alt={video.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover"
                         loading="lazy"
                     />
                     {video.duration && (
-                        <span className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 text-xs font-medium bg-black/80 text-white rounded">
+                        <span className="absolute bottom-1 right-1 px-1 py-px text-[11px] font-medium rounded"
+                            style={{ backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }}>
                             {formatDuration(video.duration)}
                         </span>
                     )}
-                    {/* Progress bar for watch history */}
                     {video.watchProgress && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-z-text-muted/30">
-                            <div className="h-full bg-accent-rose" style={{ width: `${video.watchProgress}%` }} />
+                        <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                            <div className="h-full" style={{ width: `${video.watchProgress}%`, backgroundColor: '#ff0000' }} />
                         </div>
                     )}
                 </Link>
 
-                <div className="flex-1 min-w-0 py-1">
+                <div className="flex-1 min-w-0 py-0.5">
                     <Link to={`/watch/${video._id}`}>
-                        <h3 className="font-medium text-sm text-z-text line-clamp-2 mb-1 group-hover:text-brand-light transition-colors">
+                        <h3 className="font-medium text-sm line-clamp-2 mb-1 leading-5" style={{ color: '#f1f1f1' }}>
                             {video.title}
                         </h3>
                     </Link>
-                    <div className="flex items-center gap-1 text-xs text-z-text-muted mb-1">
+                    <Link to={`/channel/${owner._id}`} className="text-xs block mb-0.5 transition-colors" style={{ color: '#aaaaaa' }}>
+                        {owner.channelName || owner.name}
+                    </Link>
+                    <div className="flex items-center gap-1 text-xs" style={{ color: '#aaaaaa' }}>
                         <span>{formatViews(video.views)}</span>
                         <span>•</span>
                         <span>{timeAgo(video.createdAt)}</span>
                     </div>
-                    <Link to={`/channel/${owner._id}`} className="flex items-center gap-2 mb-1.5">
-                        <img src={owner.avatar || `https://ui-avatars.com/api/?name=${owner.name}&background=9147ff&color=fff&size=48`}
-                            alt={owner.name} className="avatar avatar-xs" />
-                        <span className="text-xs text-z-text-muted hover:text-z-text transition-colors">{owner.channelName || owner.name}</span>
-                    </Link>
-                    <p className="text-xs text-z-text-muted line-clamp-1 hidden sm:block">{video.description}</p>
-                    {video.isShort && <span className="tag-new text-[10px] mt-1">SHORT</span>}
+                    {video.isShort && (
+                        <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-bold uppercase rounded" style={{ backgroundColor: 'rgba(255,0,0,0.15)', color: '#ff4e45' }}>SHORT</span>
+                    )}
+                </div>
+
+                {/* Three dot */}
+                <div ref={menuRef} className="relative shrink-0 self-start pt-1">
+                    <button
+                        onClick={(e) => { e.preventDefault(); setShowMenu(!showMenu); }}
+                        className="p-1 rounded-full transition-opacity"
+                        style={{ opacity: isHovered || showMenu ? 1 : 0 }}
+                    >
+                        <HiOutlineDotsVertical className="w-4 h-4" style={{ color: '#f1f1f1' }} />
+                    </button>
+                    {showMenu && (
+                        <div className="dropdown-menu right-0 top-8 w-52 z-50">
+                            <button onClick={handleWatchLater} className="dropdown-item w-full">
+                                <HiOutlineClock className="w-4 h-4" /> Save to Watch later
+                            </button>
+                            <button className="dropdown-item w-full">
+                                <HiOutlineBookmark className="w-4 h-4" /> Save to playlist
+                            </button>
+                            <button className="dropdown-item w-full">
+                                <HiOutlineShare className="w-4 h-4" /> Share
+                            </button>
+                            <div className="dropdown-divider" />
+                            <button className="dropdown-item w-full">
+                                <HiOutlineFlag className="w-4 h-4" /> Report
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         );
     }
 
-    // Default vertical card (YouTube grid style)
+    // Default vertical card — exact YouTube style
     return (
         <div
             className="group animate-fade-in"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => { setIsHovered(false); setShowMenu(false); }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {/* Thumbnail */}
-            <Link to={`/watch/${video._id}`} className="relative block aspect-video rounded-xl overflow-hidden bg-z-surface mb-3">
+            <Link to={`/watch/${video._id}`} className="relative block aspect-video rounded-xl overflow-hidden mb-3" style={{ backgroundColor: '#272727' }}>
                 <img
-                    src={video.thumbnail || `https://placehold.co/640x360/1a1a1a/9147ff?text=${encodeURIComponent(video.title?.slice(0, 2) || 'Z')}`}
+                    src={video.thumbnail || `https://placehold.co/640x360/272727/717171?text=${encodeURIComponent(video.title?.slice(0, 2) || 'Z')}`}
                     alt={video.title}
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                 />
 
-                {/* Duration badge */}
+                {/* Duration badge — YouTube style: bottom-right, semi-transparent black */}
                 {video.duration && (
-                    <span className="absolute bottom-2 right-2 px-1.5 py-0.5 text-xs font-medium bg-black/80 text-white rounded">
+                    <span className="absolute bottom-1 right-1 px-1 py-px text-xs font-medium rounded"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff', fontSize: '12px', lineHeight: '18px' }}>
                         {formatDuration(video.duration)}
                     </span>
                 )}
 
-                {/* Hover overlay actions */}
-                <div className={`absolute inset-0 bg-gradient-to-t from-black/30 to-transparent transition-opacity duration-200
-          ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-                    <div className="absolute top-2 right-2 flex flex-col gap-1">
-                        <button
-                            onClick={handleWatchLater}
-                            className="p-2 bg-black/70 rounded-lg hover:bg-black/90 transition-colors"
-                            title="Watch later"
-                        >
-                            <HiOutlineClock className="w-4 h-4 text-white" />
-                        </button>
-                        <button
-                            className="p-2 bg-black/70 rounded-lg hover:bg-black/90 transition-colors"
-                            title="Add to queue"
-                        >
-                            <HiOutlineBookmark className="w-4 h-4 text-white" />
-                        </button>
-                    </div>
+                {/* Hover overlay — Watch Later + Add to Queue */}
+                <div className="absolute top-1 right-1 flex flex-col gap-1 transition-opacity duration-150"
+                    style={{ opacity: isHovered ? 1 : 0 }}>
+                    <button
+                        onClick={handleWatchLater}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }}
+                        title="Watch later"
+                    >
+                        {savedWL ? <HiCheck className="w-4 h-4" /> : <HiOutlineClock className="w-4 h-4" />}
+                    </button>
+                    <button
+                        className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }}
+                        title="Add to queue"
+                    >
+                        <HiOutlineBookmark className="w-4 h-4" />
+                    </button>
                 </div>
 
                 {/* Short badge */}
                 {video.isShort && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider
-            bg-accent-rose/90 text-white rounded-md">
+                    <span className="absolute top-1 left-1 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded"
+                        style={{ backgroundColor: 'rgba(204,0,0,0.9)', color: '#fff' }}>
                         Short
                     </span>
                 )}
 
                 {/* Live badge */}
                 {video.isLive && (
-                    <span className="tag-live absolute bottom-2 left-2">
+                    <span className="tag-live absolute bottom-1 left-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                         LIVE
                     </span>
@@ -184,20 +229,21 @@ const VideoCard = ({ video, horizontal = false }) => {
 
                 {/* Progress bar for continue watching */}
                 {video.watchProgress && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-z-text-muted/30">
-                        <div className="h-full bg-accent-rose" style={{ width: `${video.watchProgress}%` }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
+                        <div className="h-full" style={{ width: `${video.watchProgress}%`, backgroundColor: '#ff0000' }} />
                     </div>
                 )}
             </Link>
 
-            {/* Video Info */}
+            {/* Video Info — YouTube exact layout */}
             <div className="flex gap-3">
-                {/* Channel Avatar */}
+                {/* Channel Avatar — 36px like YouTube */}
                 <Link to={`/channel/${owner._id}`} className="shrink-0 mt-0.5">
                     <img
-                        src={owner.avatar || `https://ui-avatars.com/api/?name=${owner.name}&background=9147ff&color=fff&size=72`}
+                        src={owner.avatar || `https://ui-avatars.com/api/?name=${owner.name}&background=282828&color=aaa&size=72`}
                         alt={owner.name}
-                        className="avatar w-9 h-9 hover:ring-2 hover:ring-brand/30 transition-all"
+                        className="w-9 h-9 rounded-full object-cover"
+                        style={{ backgroundColor: '#282828' }}
                     />
                 </Link>
 
@@ -205,7 +251,7 @@ const VideoCard = ({ video, horizontal = false }) => {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-1">
                         <Link to={`/watch/${video._id}`}>
-                            <h3 className="text-sm font-medium text-z-text line-clamp-2 leading-snug">
+                            <h3 className="text-sm font-medium line-clamp-2 leading-5" style={{ color: '#f1f1f1' }}>
                                 {video.title}
                             </h3>
                         </Link>
@@ -214,10 +260,10 @@ const VideoCard = ({ video, horizontal = false }) => {
                         <div ref={menuRef} className="relative shrink-0">
                             <button
                                 onClick={(e) => { e.preventDefault(); setShowMenu(!showMenu); }}
-                                className={`p-1 rounded-full hover:bg-z-surface-hover transition-all
-                  ${isHovered || showMenu ? 'opacity-100' : 'opacity-0'}`}
+                                className="p-1 rounded-full transition-opacity"
+                                style={{ opacity: isHovered || showMenu ? 1 : 0 }}
                             >
-                                <HiOutlineDotsVertical className="w-4 h-4 text-z-text-secondary" />
+                                <HiOutlineDotsVertical className="w-4 h-4" style={{ color: '#f1f1f1' }} />
                             </button>
 
                             {showMenu && (
@@ -240,10 +286,14 @@ const VideoCard = ({ video, horizontal = false }) => {
                         </div>
                     </div>
 
-                    <Link to={`/channel/${owner._id}`} className="text-xs text-z-text-muted hover:text-z-text transition-colors block mt-0.5">
+                    {/* Channel name — YouTube uses #aaa for secondary text */}
+                    <Link to={`/channel/${owner._id}`} className="text-xs block mt-0.5 leading-4 transition-colors"
+                        style={{ color: '#aaaaaa' }}>
                         {owner.channelName || owner.name}
                     </Link>
-                    <div className="flex items-center gap-1 text-xs text-z-text-muted">
+
+                    {/* Views • Time ago */}
+                    <div className="flex items-center gap-1 text-xs" style={{ color: '#aaaaaa' }}>
                         <span>{formatViews(video.views)}</span>
                         <span>•</span>
                         <span>{timeAgo(video.createdAt)}</span>
