@@ -17,24 +17,21 @@ export default {
         extend: {
             colors: {
                 'z': {
-                    // Rich dark backgrounds
-                    'bg': '#0f0f0f',
-                    'bg-secondary': '#0a0a0a',
-                    'surface': '#1a1a1a',
-                    'surface-hover': '#272727',
-                    'elevated': '#212121',
-                    'elevated-hover': '#2d2d2d',
-                    'border': '#303030',
-                    'border-light': '#3f3f3f',
-                    // Text
-                    'text': '#f1f1f1',
-                    'text-secondary': '#aaaaaa',
-                    'text-muted': '#717171',
-                    // Chip / Pill
-                    'chip': '#272727',
-                    'chip-active': '#f1f1f1',
-                    'chip-text': '#f1f1f1',
-                    'chip-text-active': '#0f0f0f',
+                    'bg': 'var(--z-bg)',
+                    'bg-secondary': 'var(--z-bg-secondary)',
+                    'surface': 'var(--z-surface)',
+                    'surface-hover': 'var(--z-surface-hover)',
+                    'elevated': 'var(--z-elevated)',
+                    'elevated-hover': 'var(--z-elevated-hover)',
+                    'border': 'var(--z-border)',
+                    'border-light': 'var(--z-border-light)',
+                    'text': 'var(--z-text)',
+                    'text-secondary': 'var(--z-text-secondary)',
+                    'text-muted': 'var(--z-text-muted)',
+                    'chip': 'var(--z-chip)',
+                    'chip-active': 'var(--z-chip-active)',
+                    'chip-text': 'var(--z-chip-text)',
+                    'chip-text-active': 'var(--z-chip-text-active)',
                 },
                 // Premium brand palette
                 'brand': {
@@ -62,7 +59,6 @@ export default {
                     emerald: '#10b981',
                     orange: '#f97316',
                 },
-                // Premium gradients
                 'premium': {
                     start: '#667eea',
                     mid: '#9147ff',
@@ -80,7 +76,7 @@ export default {
                 'gradient-ocean': 'linear-gradient(135deg, #06b6d4 0%, #2563eb 100%)',
                 'gradient-aurora': 'linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #9147ff 100%)',
                 'gradient-sunset': 'linear-gradient(135deg, #f43f5e 0%, #9147ff 50%, #2563eb 100%)',
-                'gradient-surface': 'linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%)',
+                'gradient-surface': 'linear-gradient(180deg, var(--z-surface) 0%, var(--z-bg) 100%)',
             },
             animation: {
                 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -147,13 +143,13 @@ export default {
                 },
             },
             boxShadow: {
-                'glow': '0 0 15px rgba(145, 71, 255, 0.3)',
-                'glow-lg': '0 0 30px rgba(145, 71, 255, 0.4), 0 0 60px rgba(145, 71, 255, 0.1)',
+                'glow': '0 0 15px var(--z-glow, rgba(145, 71, 255, 0.3))',
+                'glow-lg': '0 0 30px var(--z-glow-strong, rgba(145, 71, 255, 0.4)), 0 0 60px var(--z-glow, rgba(145, 71, 255, 0.1))',
                 'glow-blue': '0 0 15px rgba(37, 99, 235, 0.3)',
                 'glow-gold': '0 0 15px rgba(245, 158, 11, 0.3)',
-                'premium': '0 8px 32px rgba(0, 0, 0, 0.4)',
-                'card': '0 1px 6px rgba(0, 0, 0, 0.2)',
-                'elevated': '0 4px 16px rgba(0, 0, 0, 0.3)',
+                'premium': 'var(--z-premium-shadow, 0 8px 32px rgba(0, 0, 0, 0.4))',
+                'card': 'var(--z-card-shadow, 0 1px 6px rgba(0, 0, 0, 0.2))',
+                'elevated': 'var(--z-elevated-shadow, 0 4px 16px rgba(0, 0, 0, 0.3))',
             },
             borderRadius: {
                 'xl': '12px',

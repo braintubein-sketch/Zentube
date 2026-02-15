@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import {
     HiOutlineSearch, HiOutlineBell, HiOutlinePlus,
     HiOutlineVideoCamera, HiOutlineMicrophone,
@@ -12,6 +13,7 @@ import {
 
 const Navbar = ({ onToggleSidebar }) => {
     const { user, isAuthenticated, logout } = useAuth();
+    const { isDark, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const location = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
@@ -56,7 +58,7 @@ const Navbar = ({ onToggleSidebar }) => {
     };
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-z-bg/95 backdrop-blur-md border-b border-z-border/50">
+        <header className="fixed top-0 left-0 right-0 z-50 h-14 backdrop-blur-md border-b" style={{ backgroundColor: 'color-mix(in srgb, var(--z-bg) 95%, transparent)', borderColor: 'var(--z-border)' }}>
             <div className="flex items-center justify-between h-full px-4">
                 {/* Left: Menu + Logo */}
                 <div className="flex items-center gap-2 min-w-[200px]">
@@ -114,6 +116,20 @@ const Navbar = ({ onToggleSidebar }) => {
 
                 {/* Right: Actions */}
                 <div className="flex items-center gap-1 min-w-[200px] justify-end">
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className="theme-toggle"
+                        aria-label="Toggle theme"
+                        title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                    >
+                        {isDark ? (
+                            <HiOutlineSun className="icon" />
+                        ) : (
+                            <HiOutlineMoon className="icon" />
+                        )}
+                    </button>
+
                     {/* Mobile Search Toggle */}
                     <button
                         onClick={() => setShowMobileSearch(!showMobileSearch)}

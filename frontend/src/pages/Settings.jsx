@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { authAPI } from '../api';
 import toast from 'react-hot-toast';
 import {
@@ -11,6 +12,7 @@ import {
 
 const Settings = () => {
     const { user, updateUser } = useAuth();
+    const { theme: currentTheme, setTheme } = useTheme();
     const [activeSection, setActiveSection] = useState('account');
     const [saving, setSaving] = useState(false);
     const [profileForm, setProfileForm] = useState({
@@ -25,7 +27,7 @@ const Settings = () => {
         confirmPassword: '',
     });
     const [preferences, setPreferences] = useState({
-        theme: 'dark',
+        theme: currentTheme,
         language: 'en',
         autoplay: true,
         notifications: true,
@@ -241,7 +243,7 @@ const Settings = () => {
                                         ].map(theme => (
                                             <button
                                                 key={theme.id}
-                                                onClick={() => setPreferences({ ...preferences, theme: theme.id })}
+                                                onClick={() => { setPreferences({ ...preferences, theme: theme.id }); setTheme(theme.id); }}
                                                 className={`p-4 rounded-xl border transition-all text-center ${preferences.theme === theme.id
                                                     ? 'border-brand bg-brand/10 shadow-glow'
                                                     : 'border-z-border hover:border-z-border-light hover:bg-z-surface'

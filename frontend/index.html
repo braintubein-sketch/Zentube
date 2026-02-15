@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
@@ -9,7 +9,7 @@
   <meta name="keywords"
     content="zentube, video streaming, video platform, watch videos, upload videos, shorts, creators" />
   <meta name="theme-color" content="#0f0f0f" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Zentube - Premium Video Streaming" />
@@ -28,16 +28,41 @@
 
   <title>Zentube - Premium Video Streaming</title>
 
+  <!-- Anti-flash: instantly set theme before paint -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('zentube_theme') || 'dark';
+      if (t === 'system') t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.className = t;
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f0f' : '#ffffff');
+    })();
+  </script>
+
   <style>
     /* Critical anti-flash styles */
-    html {
+    html[data-theme="dark"] {
       background-color: #0f0f0f;
+    }
+
+    html[data-theme="light"] {
+      background-color: #ffffff;
     }
 
     body {
       margin: 0;
+      transition: background-color 0.3s ease;
+    }
+
+    html[data-theme="dark"] body {
       background-color: #0f0f0f;
       color: #f1f1f1;
+    }
+
+    html[data-theme="light"] body {
+      background-color: #ffffff;
+      color: #0f0f0f;
     }
 
     #root {

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { lazy, Suspense } from 'react';
 
 import Layout from './components/Layout/Layout';
@@ -60,63 +61,65 @@ const GuestRoute = ({ children }) => {
 function App() {
     return (
         <Router>
-            <AuthProvider>
-                <Toaster
-                    position="bottom-left"
-                    toastOptions={{
-                        duration: 3000,
-                        style: {
-                            background: '#212121',
-                            color: '#f1f1f1',
-                            borderRadius: '12px',
-                            border: '1px solid #303030',
-                            padding: '12px 16px',
-                            fontSize: '14px',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                        },
-                        success: {
-                            iconTheme: { primary: '#10b981', secondary: '#fff' },
-                        },
-                        error: {
-                            iconTheme: { primary: '#f43f5e', secondary: '#fff' },
-                        },
-                    }}
-                />
+            <ThemeProvider>
+                <AuthProvider>
+                    <Toaster
+                        position="bottom-left"
+                        toastOptions={{
+                            duration: 3000,
+                            style: {
+                                background: 'var(--z-elevated)',
+                                color: 'var(--z-text)',
+                                borderRadius: '12px',
+                                border: '1px solid var(--z-border)',
+                                padding: '12px 16px',
+                                fontSize: '14px',
+                                boxShadow: 'var(--z-premium-shadow)',
+                            },
+                            success: {
+                                iconTheme: { primary: '#10b981', secondary: '#fff' },
+                            },
+                            error: {
+                                iconTheme: { primary: '#f43f5e', secondary: '#fff' },
+                            },
+                        }}
+                    />
 
-                <Suspense fallback={<PageLoader />}>
-                    <Routes>
-                        <Route path="/" element={<Layout />}>
-                            {/* Public Routes */}
-                            <Route index element={<Home />} />
-                            <Route path="search" element={<Search />} />
-                            <Route path="trending" element={<Trending />} />
-                            <Route path="shorts" element={<Shorts />} />
-                            <Route path="watch/:id" element={<Watch />} />
-                            <Route path="channel/:id" element={<Channel />} />
+                    <Suspense fallback={<PageLoader />}>
+                        <Routes>
+                            <Route path="/" element={<Layout />}>
+                                {/* Public Routes */}
+                                <Route index element={<Home />} />
+                                <Route path="search" element={<Search />} />
+                                <Route path="trending" element={<Trending />} />
+                                <Route path="shorts" element={<Shorts />} />
+                                <Route path="watch/:id" element={<Watch />} />
+                                <Route path="channel/:id" element={<Channel />} />
 
-                            {/* Auth */}
-                            <Route path="auth" element={<GuestRoute><Auth /></GuestRoute>} />
+                                {/* Auth */}
+                                <Route path="auth" element={<GuestRoute><Auth /></GuestRoute>} />
 
-                            {/* Protected Routes */}
-                            <Route path="upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-                            <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                            <Route path="edit/:id" element={<ProtectedRoute><EditVideo /></ProtectedRoute>} />
-                            <Route path="history" element={<ProtectedRoute><History /></ProtectedRoute>} />
-                            <Route path="watch-later" element={<ProtectedRoute><WatchLater /></ProtectedRoute>} />
-                            <Route path="liked-videos" element={<ProtectedRoute><LikedVideos /></ProtectedRoute>} />
-                            <Route path="playlists" element={<ProtectedRoute><Playlists /></ProtectedRoute>} />
-                            <Route path="subscriptions" element={<ProtectedRoute><Subscriptions /></ProtectedRoute>} />
-                            <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                                {/* Protected Routes */}
+                                <Route path="upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+                                <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                                <Route path="edit/:id" element={<ProtectedRoute><EditVideo /></ProtectedRoute>} />
+                                <Route path="history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+                                <Route path="watch-later" element={<ProtectedRoute><WatchLater /></ProtectedRoute>} />
+                                <Route path="liked-videos" element={<ProtectedRoute><LikedVideos /></ProtectedRoute>} />
+                                <Route path="playlists" element={<ProtectedRoute><Playlists /></ProtectedRoute>} />
+                                <Route path="subscriptions" element={<ProtectedRoute><Subscriptions /></ProtectedRoute>} />
+                                <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-                            {/* Admin */}
-                            <Route path="admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
+                                {/* Admin */}
+                                <Route path="admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
 
-                            {/* 404 */}
-                            <Route path="*" element={<NotFound />} />
-                        </Route>
-                    </Routes>
-                </Suspense>
-            </AuthProvider>
+                                {/* 404 */}
+                                <Route path="*" element={<NotFound />} />
+                            </Route>
+                        </Routes>
+                    </Suspense>
+                </AuthProvider>
+            </ThemeProvider>
         </Router>
     );
 }
